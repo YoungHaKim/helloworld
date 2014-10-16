@@ -39,12 +39,28 @@ int main()
         goto error;
     }
 
-    if ((ret = send(clientSock, WRITE_DATA, sizeof(WRITE_DATA), 0)) <= 0) {
-        perror("send");
-        ret = -1;
-    } else
-        printf("Wrote '%s' (%d Bytes)\n", WRITE_DATA, ret);
+char inputBuffer[256] = "Hello world!";
+char recvBuffer[256];
 
+while (1)
+{
+      	printf("input message>\n");
+        char inputBuffer[256];
+	gets(inputBuffer);
+	fflush(stdin);
+	int readBytes = strlen(inputBuffer);
+	inputBuffer[readBytes] = '\0';
+
+	printf("sending [%s] to server\n", inputBuffer);	
+	send(clientSock, inputBuffer, sizeof(char)*(readBytes+1), 0);
+    
+	if ((ret = recv(clientSock, recvBuffer, sizeof(recvBuffer), 0)) <= 0) {
+        perror("recv");
+        ret = -1;
+    } else {
+        printf("Recv %d Bytes: [%s]\n", ret, recvBuffer);
+    }
+}
 error:
     close(clientSock);
 leave:

@@ -50,12 +50,17 @@ int main()
         ret = -1;
         goto error;
     }
+while (1)
+{
     if ((ret = recv(acceptedSock, readBuf, MAX_DATA, 0)) <= 0) {
         perror("recv");
         ret = -1;
-    } else
-        printf("Read %d Bytes: '%s'\n", ret, readBuf);
-
+	break;
+    } else {
+        printf("Server side recv %d Bytes: '%s'\n", ret, readBuf);
+	ret = send(acceptedSock, readBuf, sizeof(readBuf), 0);
+    }
+}
     close(acceptedSock);
 error:
     close(serverSock);
